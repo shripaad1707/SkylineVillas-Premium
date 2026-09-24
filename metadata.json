@@ -1,0 +1,6 @@
+{
+  "name": "Skyline Villas",
+  "description": "Discover Skyline Villas, a concept collection of contemporary private residences shaped by architecture, landscape and light in Hyderabad.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

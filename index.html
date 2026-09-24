@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skyline Villas | Contemporary Private Residences</title>
+    <meta name="description" content="Discover Skyline Villas, a concept collection of contemporary private residences shaped by architecture, landscape and light in Hyderabad." />
+    <meta property="og:title" content="Skyline Villas | Contemporary Private Residences" />
+    <meta property="og:description" content="A quiet architectural world of private residences, natural materials and considered landscapes." />
+    <meta property="og:image" content="/images/skyline-facade.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Skyline Villas | Contemporary Private Residences" />
+    <meta name="twitter:description" content="A quiet architectural world of private residences, natural materials and considered landscapes." />
+    <meta name="twitter:image" content="/images/skyline-facade.jpg" />
+    <!-- Without these the site served no icon at all, so browsers and search
+         engines fell back to whatever they had cached for the origin. -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" as="image" href="/images/skyline-hero.jpg" fetchpriority="high" media="(min-width: 768px)" />
+    <link rel="preload" as="image" href="/images/skyline-hero-mobile.jpg" fetchpriority="high" media="(max-width: 767px)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Same two families, same weights, fetched without blocking the first
+         paint. The stylesheet already carries display=swap, so blocking on it
+         only ever delayed the hero appearing; it never prevented the swap. -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@300;400;500&display=swap"
+      onload="this.rel='stylesheet'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet" />
+    </noscript>
+    <style>
+      /* Until React mounts, #root is empty and the cream body colour shows
+         through where the black hero is about to be — a light flash on every
+         cold load. This paints that first viewport in the hero's own black and
+         stops applying the moment the hero exists. Nothing in the finished
+         page is affected. */
+      #root:empty {
+        min-height: 100svh;
+        background-color: #000000;
+      }
+    </style>
+  </head>
+  <body class="bg-[#FCFAF6] text-[#191715] font-sans antialiased selection:bg-black selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

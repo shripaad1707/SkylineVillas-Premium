@@ -1,0 +1,373 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+
+  --color-primary: #000000;
+  --color-primary-foreground: #FCFAF6;
+  --color-background: #FCFAF6;
+  --color-foreground: #191715;
+  --color-surface: #F4F0E8;
+  --color-surface-light: #FAF8F5;
+  --color-border: rgba(25, 23, 21, 0.12);
+  --color-muted: #EAE6DD;
+  --color-muted-foreground: #736E67;
+  --color-on-dark: #FCFAF6;
+  --color-on-dark-muted: rgba(252, 250, 246, 0.65);
+  --color-accent: #000000;
+
+  /* Motion tokens — a single slow, decelerating expo-out for everything. */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-quick: 600ms;
+  --duration-base: 900ms;
+  --duration-slow: 1300ms;
+  --duration-settle: 2600ms;
+}
+
+body {
+  font-family: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  background-color: #FCFAF6;
+  color: #191715;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+}
+
+/* ---------- Type scale ---------- */
+
+.text-display-hero {
+  font-family: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.3rem, 6.2vw, 5.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+}
+
+.text-display-lg {
+  font-weight: 400;
+  font-size: clamp(2.2rem, 3.7vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+.text-display-md {
+  font-weight: 400;
+  font-size: clamp(2.2rem, 3.7vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+.text-display-sm {
+  font-family: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+  line-height: 1.12;
+}
+
+.lead {
+  font-weight: 300;
+  font-size: clamp(1rem, 0.4vw + 0.92rem, 1.125rem);
+  line-height: 1.75;
+  max-width: 46ch;
+}
+
+/* Eyebrow label: small caps line preceded by a 24px accent rule. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+}
+
+.eyebrow::before {
+  content: "";
+  flex: none;
+  width: 24px;
+  height: 1px;
+  margin-right: 14px;
+  background-color: currentColor;
+  opacity: 0.75;
+}
+
+/* Centred eyebrow chip, for centred section headers. */
+.eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  padding: 0.7rem 1.35rem;
+  border-radius: 9999px;
+  background-color: rgba(25, 23, 21, 0.05);
+}
+
+.caption {
+  font-weight: 400;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.btn-label {
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+
+.btn-solid {
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  min-height: 48px;
+  padding-left: 28px;
+  padding-right: 28px;
+  border-radius: 0;
+  transition: background-color 500ms var(--ease-expo),
+              border-color 500ms var(--ease-expo),
+              color 500ms var(--ease-expo);
+}
+
+/* A soft shadow that keeps light copy readable over busy photography. */
+.hero-legible {
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* Visible keyboard focus on the hero's light-on-photo actions. */
+.hero-focus:focus-visible {
+  outline: 1px solid #FCFAF6;
+  outline-offset: 4px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Layout shells (unchanged) ---------- */
+
+.section-shell {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .section-shell {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-shell {
+    padding-top: 9rem;
+    padding-bottom: 9rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+.content-shell {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 94rem;
+}
+
+/* Hero scrim: weighted to the left so the type stays legible, while the sky
+   and the wet street read through on the right. */
+.bg-hero-shade {
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.46) 30%, rgba(0,0,0,0.18) 52%, rgba(0,0,0,0.04) 68%, rgba(0,0,0,0) 80%),
+    linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.04) 30%, rgba(0,0,0,0.05) 70%, rgba(0,0,0,0.26) 100%);
+}
+
+/* On phones the copy spans the full width, so a left-weighted scrim buys
+   nothing; fall back to a light vertical one for legibility. */
+@media (max-width: 767px) {
+  .bg-hero-shade {
+    background: linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.28) 28%, rgba(0,0,0,0.46) 68%, rgba(0,0,0,0.62) 100%);
+  }
+}
+
+.bg-experience-shade {
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.88) 100%);
+}
+
+.bg-cta-shade {
+  background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 60%, rgba(0,0,0,0.88) 100%);
+}
+
+/* ---------- Masked line reveal ---------- */
+
+.masked-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+/* ---------- Hover image zoom ---------- */
+
+.zoom-img {
+  transform: scale(1);
+  transition-property: transform;
+  transition-duration: var(--zoom-duration, 1400ms);
+  transition-timing-function: var(--ease-expo);
+}
+
+/* `will-change` is promoted on hover rather than declared permanently: as a
+   static rule it pinned every photo on the page into its own compositor layer
+   for the whole session, which is GPU memory a phone does not have to spare. */
+.zoom-frame:hover .zoom-img,
+.group:hover .zoom-img {
+  transform: scale(var(--zoom-scale, 1.035));
+  will-change: transform;
+}
+
+/* ---------- Link buttons ---------- */
+
+/* A 40%-opacity underline that retracts from the left on hover. */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.4;
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 700ms var(--ease-expo);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(0);
+}
+
+/* Nav link underline: a 1px line that grows left to right on hover. */
+.nav-underline {
+  position: relative;
+}
+
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms var(--ease-expo);
+}
+
+.nav-underline:hover::after,
+.nav-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Numbered rows: a 1px accent line drawn across the top on hover. */
+.row-rule {
+  position: relative;
+}
+
+.row-rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms var(--ease-expo);
+}
+
+.row-rule:hover::before,
+.row-rule:focus-within::before {
+  transform: scaleX(1);
+}
+
+.row-title {
+  transition: transform 700ms var(--ease-expo);
+}
+
+.row-rule:hover .row-title,
+.row-rule:focus-within .row-title {
+  transform: translateX(6px);
+}
+
+/* ---------- Lenis ---------- */
+
+/* Phones scroll natively, so anchor jumps need the platform's own smooth
+   scrolling. Where Lenis is running it overrides this on the next rule, and
+   the reduced-motion block at the end of the file overrides both. */
+html {
+  scroll-behavior: smooth;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+/* The page sets scroll-smooth; native smooth scrolling fights Lenis. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ---------- Focus ---------- */
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
