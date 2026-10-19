@@ -1146,6 +1146,11 @@ export const VillaShowcase: React.FC = () => {
               </div>
             )}
 
+            {/* Viewfinder corner marks: 20px L-shapes, 1px, 50% opacity, inset 20px */}
+            {(['left-5 top-5 border-l border-t', 'right-5 top-5 border-r border-t', 'left-5 bottom-5 border-l border-b', 'right-5 bottom-5 border-r border-b'] as const).map((pos) => (
+              <span key={pos} aria-hidden="true" className={`pointer-events-none absolute z-20 h-5 w-5 border-[#F3EFEA]/50 ${pos}`} />
+            ))}
+
             {/* Dev telemetry badge (hidden unless ?perf=true or Ctrl+Shift+P) */}
             {showPerf && (
               <div

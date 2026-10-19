@@ -9,25 +9,20 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const isPhone = () =>
-  typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
-
 /**
- * Whole-page inertial smooth scrolling for wheel input. Disabled entirely under
+ * Whole-page smooth scrolling on every screen size. Disabled entirely under
  * prefers-reduced-motion, where the browser's native scrolling is used.
  *
- * Phones opt out completely. `syncTouch` cancels the platform's own scrolling
- * and re-drives the page from JavaScript, so every frame of every swipe had to
- * wait behind React, fifteen scroll-linked parallax layers and the WebGL loop —
- * which is what made phone scrolling feel heavy and made the scroll-linked
- * animations lag behind the finger. Nothing here reads Lenis for its progress:
- * the parallax, the hero scroll-out and the 3D camera all read the real
- * document scroll position, so they run identically on native scrolling, now
- * driven by the compositor at the platform's own frame rate. Anchors fall back
- * to CSS `scroll-behavior: smooth`. Tablets and desktops are untouched.
+ * Mouse wheels and trackpads get Lenis's inertial easing. Touch keeps the
+ * phone's own momentum scrolling (`syncTouch: false`): that is driven by the
+ * compositor at the screen's full frame rate, so it stays smoother than any
+ * JavaScript-driven touch scroll, and the scroll-linked parallax, hero
+ * scroll-out and 3D camera follow the finger exactly. On phones Lenis still
+ * glides in-page anchor links and programmatic scrolls on the same curve as
+ * desktop, and pauses the page under menus and dialogs.
  */
 export function initLenis(): () => void {
-  if (prefersReducedMotion() || isPhone()) return () => {};
+  if (prefersReducedMotion()) return () => {};
 
   instance = new Lenis({
     duration: 1.15,

@@ -21,6 +21,11 @@ export const Architecture: React.FC = () => {
                   light, proportion and material.
                 </em>,
               ]}
+              mobileLines={[
+                'Architecture shaped by',
+                <em key="m2" className="italic">light, proportion</em>,
+                <em key="m3" className="italic">and material.</em>,
+              ]}
             />
           </div>
           <Reveal as="p" delay={0.15} className="lead max-w-lg self-end text-[#FCFAF6]/70">

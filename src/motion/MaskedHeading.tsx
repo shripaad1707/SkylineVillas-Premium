@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useSyncExternalStore } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { DUR, EASE } from './tokens.ts';
 import { useIntroDone } from './intro.ts';
@@ -6,6 +6,8 @@ import { useIntroDone } from './intro.ts';
 interface MaskedHeadingProps {
   /** One entry per headline line. Each rises out of its own mask. */
   lines: React.ReactNode[];
+  /** Optional line breaks for phones (under 640px), where a desktop line would wrap. */
+  mobileLines?: React.ReactNode[];
   className?: string;
   as?: 'h1' | 'h2' | 'h3';
   /** Play on mount instead of on scroll (the hero headline). */
@@ -23,8 +25,22 @@ interface MaskedHeadingProps {
  * translated outside their mask, so an observer on them would be clipped to
  * zero intersection and never fire.
  */
+const PHONE = '(max-width: 639px)';
+function usePhone() {
+  return useSyncExternalStore(
+    (fn) => {
+      const mq = window.matchMedia(PHONE);
+      mq.addEventListener('change', fn);
+      return () => mq.removeEventListener('change', fn);
+    },
+    () => window.matchMedia(PHONE).matches,
+    () => false,
+  );
+}
+
 export const MaskedHeading: React.FC<MaskedHeadingProps> = ({
-  lines,
+  lines: desktopLines,
+  mobileLines,
   className,
   as = 'h2',
   onLoad = false,
@@ -37,6 +53,8 @@ export const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   // On-load headings wait for the opening sequence to lift.
   const introDone = useIntroDone();
   const Tag = as as React.ElementType;
+  const phone = usePhone();
+  const lines = phone && mobileLines ? mobileLines : desktopLines;
 
   if (reduced) {
     return (

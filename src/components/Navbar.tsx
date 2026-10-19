@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
 
             <nav
               data-lenis-prevent
-              className="flex flex-col py-6 px-7 space-y-5 overflow-y-auto flex-1"
+              className="flex flex-col py-6 px-7 space-y-2 overflow-y-auto flex-1"
             >
               {navLinks.map((link, i) => (
                 <motion.a
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
                   initial={reduced ? false : { opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: DUR.base, delay: 0.08 + i * 0.06, ease: EASE }}
-                  className="text-base tracking-[0.12em] uppercase font-light text-[#FCFAF6]/90 hover:text-white py-2 border-b border-[#FCFAF6]/10"
+                  className="font-display text-[clamp(2rem,8.5vw,2.6rem)] leading-[1.1] tracking-[-0.01em] text-[#FCFAF6]/90 hover:text-white py-2.5 border-b border-[#FCFAF6]/10"
                 >
                   {link.label}
                 </motion.a>

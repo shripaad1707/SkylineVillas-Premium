@@ -96,7 +96,11 @@ export const GallerySection: React.FC = () => {
                 width={1536}
                 height={1024}
               />
-              <figcaption className="caption absolute bottom-0 left-0 z-10 bg-[#FCFAF6] px-4 py-2 text-[#191715]">
+              <figcaption className="caption absolute bottom-0 left-0 z-10 flex items-center gap-3 bg-[#FCFAF6] px-4 py-2 text-[#191715]">
+                <span
+                  aria-hidden="true"
+                  className="block h-px w-8 origin-left scale-x-50 bg-current transition-transform duration-700 ease-expo group-hover:scale-x-100"
+                />
                 {item.title}
               </figcaption>
             </motion.figure>

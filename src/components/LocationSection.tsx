@@ -27,9 +27,13 @@ export const LocationSection: React.FC = () => {
               as="h2"
               className="font-display text-display-md text-[#FCFAF6]"
               lines={[
-                'Connected to the city.',
-                <em key="l2" className="italic">
-                  Removed from the noise.
+                'Connected to',
+                'the city.',
+                <em key="l3" className="italic">
+                  Removed from
+                </em>,
+                <em key="l4" className="italic">
+                  the noise.
                 </em>,
               ]}
             />

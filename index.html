@@ -22,20 +22,6 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" as="image" href="/images/skyline-hero.jpg" fetchpriority="high" media="(min-width: 768px)" />
     <link rel="preload" as="image" href="/images/skyline-hero-mobile.jpg" fetchpriority="high" media="(max-width: 767px)" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Same two families, same weights, fetched without blocking the first
-         paint. The stylesheet already carries display=swap, so blocking on it
-         only ever delayed the hero appearing; it never prevented the swap. -->
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@300;400;500&display=swap"
-      onload="this.rel='stylesheet'"
-    />
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet" />
-    </noscript>
     <style>
       /* Until React mounts, #root is empty and the cream body colour shows
          through where the black hero is about to be — a light flash on every
