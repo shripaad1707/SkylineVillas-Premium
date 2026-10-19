@@ -107,9 +107,20 @@ export const Footer: React.FC = () => {
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[0.65rem] text-[#FCFAF6]/40 font-light">
           <p>© {new Date().getFullYear()} Skyline Villas. All rights reserved.</p>
-          <p className="text-center sm:text-right">
-            Conceptual architectural showcase. Renderings and specifications for illustration purposes.
-          </p>
+          <div className="text-center sm:text-right">
+            <p>Conceptual architectural showcase. Renderings and specifications for illustration purposes.</p>
+            <p className="mt-1.5">
+              Website, AI assistant and 3D tour by{' '}
+              <a
+                href="https://shripaads-agency.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#C5A880] underline-offset-4 hover:text-[#E3CBA4] hover:underline"
+              >
+                Shripaad Koduri
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

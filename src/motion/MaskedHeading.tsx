@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { DUR, EASE } from './tokens.ts';
+import { useIntroDone } from './intro.ts';
 
 interface MaskedHeadingProps {
   /** One entry per headline line. Each rises out of its own mask. */
@@ -33,6 +34,8 @@ export const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   const ref = useRef<HTMLHeadingElement>(null);
   const reduced = useReducedMotion();
   const inView = useInView(ref, { once: true, amount: 0.25 });
+  // On-load headings wait for the opening sequence to lift.
+  const introDone = useIntroDone();
   const Tag = as as React.ElementType;
 
   if (reduced) {
@@ -47,7 +50,7 @@ export const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     );
   }
 
-  const play = onLoad || inView;
+  const play = onLoad ? introDone : inView;
 
   return (
     <Tag ref={ref} className={className} {...rest}>

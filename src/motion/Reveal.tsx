@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { DUR, EASE, VIEWPORT } from './tokens.ts';
+import { useIntroDone } from './intro.ts';
 
 interface RevealProps {
   children: React.ReactNode;
@@ -35,6 +36,7 @@ export const Reveal: React.FC<RevealProps> = ({
   ...rest
 }) => {
   const reduced = useReducedMotion();
+  const introDone = useIntroDone();
   const Tag = (motion as unknown as Record<string, React.ElementType>)[as];
 
   if (reduced) {
@@ -53,7 +55,7 @@ export const Reveal: React.FC<RevealProps> = ({
       className={className}
       initial={{ opacity: 0, y }}
       {...(onLoad
-        ? { animate: target }
+        ? { animate: introDone ? target : undefined }
         : { whileInView: target, viewport: VIEWPORT })}
       transition={{ duration, delay, ease: EASE }}
       {...rest}

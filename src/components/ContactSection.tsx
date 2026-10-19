@@ -70,6 +70,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenEnquiry })
             <ArrowRight className="h-3.5 w-3.5 transition-transform duration-700 ease-expo group-hover:translate-x-1" />
           </button>
 
+          <button
+            id="contact-chat-concierge-btn"
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('concierge:open'))}
+            className="group link-underline btn-label inline-flex items-center gap-3 pb-2 text-[#FCFAF6]"
+          >
+            <span>Chat with the assistant</span>
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-700 ease-expo group-hover:translate-x-1" />
+          </button>
+
           <a
             id="contact-explore-residences-link"
             href="#residences"

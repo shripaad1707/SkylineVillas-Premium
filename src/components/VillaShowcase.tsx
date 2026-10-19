@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { DUR, EASE, VIEWPORT } from '../motion/tokens.ts';
 import { Reveal } from '../motion/Reveal.tsx';
@@ -40,6 +40,32 @@ let viewerSingleton: PersistentViewer | null = null;
 let initViewerPromise: Promise<PersistentViewer> | null = null;
 
 /**
+ * Load progress for the on-screen loader. The villa is a 13 MB Draco model, so
+ * on a first visit over mobile data it takes a few seconds to arrive; the
+ * viewport shows real download progress over a still of the villa instead of
+ * an empty dark box, and offers a retry if the download fails.
+ */
+const MODEL_BYTES = 13_702_856;
+type LoadPhase = 'idle' | 'loading' | 'ready' | 'error';
+let loadState: { phase: LoadPhase; progress: number } = { phase: 'idle', progress: 0 };
+const loadListeners = new Set<() => void>();
+function setLoad(phase: LoadPhase, progress: number) {
+  if (loadState.phase === phase && Math.abs(loadState.progress - progress) < 0.01) return;
+  loadState = { phase, progress };
+  loadListeners.forEach((fn) => fn());
+}
+function useLoadState() {
+  return useSyncExternalStore(
+    (fn) => {
+      loadListeners.add(fn);
+      return () => loadListeners.delete(fn);
+    },
+    () => loadState,
+    () => loadState,
+  );
+}
+
+/**
  * Initialize or retrieve the persistent 3D viewer singleton.
  * Runs once per browser session.
  */
@@ -62,6 +88,7 @@ async function getOrInitViewer(mountElement?: HTMLElement | null): Promise<Persi
   }
 
   initViewerPromise = (async () => {
+    setLoad('loading', 0.03);
     const THREE = await import('three');
     const [
       { OrbitControls },
@@ -211,9 +238,19 @@ async function getOrInitViewer(mountElement?: HTMLElement | null): Promise<Persi
       .setDRACOLoader(dracoLoader)
       .setMeshoptDecoder(MeshoptDecoder);
 
+    setLoad('loading', 0.06);
     const gltf = await new Promise<any>((resolve, reject) => {
-      loader.load(MODEL_URL, resolve, undefined, reject);
+      loader.load(
+        MODEL_URL,
+        resolve,
+        (e: ProgressEvent) => {
+          const total = e.lengthComputable && e.total ? e.total : MODEL_BYTES;
+          setLoad('loading', 0.06 + 0.84 * Math.min(1, e.loaded / total));
+        },
+        reject,
+      );
     });
+    setLoad('loading', 0.93);
 
     const model = gltf.scene;
 
@@ -709,6 +746,8 @@ async function getOrInitViewer(mountElement?: HTMLElement | null): Promise<Persi
       interactCb = cb;
     };
 
+    setLoad('ready', 1);
+
     viewerSingleton = {
       renderer,
       scene,
@@ -736,6 +775,7 @@ async function getOrInitViewer(mountElement?: HTMLElement | null): Promise<Persi
     return viewerSingleton;
   })().catch((err) => {
     initViewerPromise = null;
+    setLoad('error', loadState.progress);
     throw err;
   });
 
@@ -791,6 +831,14 @@ export const VillaShowcase: React.FC = () => {
     () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches,
   );
   const [moved, setMoved] = useState(false);
+  const load = useLoadState();
+  // The loader stays mounted just long enough to fade out, then leaves the DOM.
+  const [loaderGone, setLoaderGone] = useState(() => loadState.phase === 'ready');
+  useEffect(() => {
+    if (load.phase !== 'ready') return;
+    const t = window.setTimeout(() => setLoaderGone(true), 1200);
+    return () => window.clearTimeout(t);
+  }, [load.phase]);
 
   // Performance telemetry visibility (URL param ?perf=true or Ctrl+Shift+P)
   const [showPerf, setShowPerf] = useState(() => {
@@ -980,6 +1028,19 @@ export const VillaShowcase: React.FC = () => {
     };
   }, []);
 
+  const handleRetry = useCallback(() => {
+    const mount = mountRef.current;
+    setLoad('loading', 0.03);
+    getOrInitViewer(mount)
+      .then((viewer) => {
+        if (mount && !mount.contains(viewer.domElement)) mount.appendChild(viewer.domElement);
+        if (mount) viewer.resize(mount.clientWidth, mount.clientHeight);
+        viewer.setOnInteract(() => setMoved(true));
+        if (isOnScreenRef.current) viewer.play();
+      })
+      .catch(console.error);
+  }, []);
+
   const handleReset = useCallback(() => {
     viewerSingleton?.reset();
     setMoved(false);
@@ -1023,7 +1084,7 @@ export const VillaShowcase: React.FC = () => {
           transition={{ duration: DUR.base, ease: EASE }}
           className="mt-12"
         >
-          {/* 3D Viewport container housing the persistent WebGL canvas directly without any loading screen */}
+          {/* 3D viewport: the persistent WebGL canvas, with a progress loader over a still of the villa until the model is ready */}
           <div
             ref={mountRef}
             className="relative h-[62svh] min-h-[400px] w-full overflow-hidden rounded-[18px] border border-white/[0.08] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.85)] lg:h-[78svh]"
@@ -1031,6 +1092,60 @@ export const VillaShowcase: React.FC = () => {
               background: 'radial-gradient(circle at 50% 45%, #18191F 0%, #101115 50%, #070709 100%)',
             }}
           >
+            {!loaderGone && (
+              <div
+                className={`absolute inset-0 z-10 transition-opacity duration-1000 ease-expo ${
+                  load.phase === 'ready' ? 'pointer-events-none opacity-0' : load.phase === 'error' ? 'opacity-100' : 'pointer-events-none opacity-100'
+                }`}
+              >
+                <img
+                  src="/images/skyline-facade.jpg"
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full scale-105 object-cover opacity-25 blur-[3px]"
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(16,17,21,0.35)_0%,rgba(7,7,9,0.92)_75%)]" />
+                <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
+                  {load.phase === 'error' ? (
+                    <>
+                      <p className="font-display text-2xl text-[#F5F2EB]">The 3D villa didn't load.</p>
+                      <p className="mt-2 max-w-xs text-sm font-light text-[#9E9B94]">This can happen on a weak connection. It's a large model, so it may take a moment.</p>
+                      <button
+                        type="button"
+                        onClick={handleRetry}
+                        className="btn-solid mt-6 inline-flex items-center justify-center border border-[#C5A880]/60 text-[#F3EFEA] hover:border-[#C5A880] hover:bg-[#C5A880]/10"
+                      >
+                        Try again
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <svg width="76" height="76" viewBox="0 0 76 76" className="-rotate-90" aria-hidden="true">
+                        <circle cx="38" cy="38" r="34" fill="none" stroke="rgba(243,239,234,0.12)" strokeWidth="1.5" />
+                        <circle
+                          cx="38"
+                          cy="38"
+                          r="34"
+                          fill="none"
+                          stroke="#C5A880"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeDasharray={2 * Math.PI * 34}
+                          strokeDashoffset={2 * Math.PI * 34 * (1 - load.progress)}
+                          style={{ transition: 'stroke-dashoffset 400ms cubic-bezier(0.16,1,0.3,1)' }}
+                        />
+                      </svg>
+                      <p className="tabular -mt-[49px] mb-[33px] text-[13px] font-medium text-[#F3EFEA]" aria-live="polite">
+                        {Math.round(load.progress * 100)}%
+                      </p>
+                      <p className="caption mt-5 text-[#C5A880]">{load.phase === 'idle' ? 'Preparing the 3D villa' : 'Loading the 3D villa'}</p>
+                      <p className="mt-2 text-xs font-light text-[#8D8A83]">Full residence and landscaping · first visit only</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Dev telemetry badge (hidden unless ?perf=true or Ctrl+Shift+P) */}
             {showPerf && (
               <div

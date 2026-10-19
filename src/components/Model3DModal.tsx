@@ -93,7 +93,7 @@ export const Model3DModal: React.FC<Model3DModalProps> = ({ isOpen, onClose, onE
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: DUR.quick, ease: EASE }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-2 sm:p-6"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/90 backdrop-blur-md p-2 sm:p-6"
         >
           <motion.div
             data-lenis-prevent

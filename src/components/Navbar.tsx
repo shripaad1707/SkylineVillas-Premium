@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { EASE, DUR } from '../motion/tokens.ts';
 import { lockScroll, unlockScroll } from '../motion/lenis.ts';
+import { useIntroDone } from '../motion/intro.ts';
 
 interface NavbarProps {
   onOpenEnquiry: () => void;
@@ -28,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const reduced = useReducedMotion();
+  const introDone = useIntroDone();
 
   useEffect(() => {
     let ticking = false;
@@ -63,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
     { label: 'Philosophy', href: '#philosophy' },
     { label: 'Architecture', href: '#architecture' },
     { label: 'Residences', href: '#residences' },
-    // The 3D section was removed, so Experience points at Life at Skyline.
+    { label: '3D Tour', href: '#showcase' },
     { label: 'Experience', href: '#life' },
     { label: 'Contact', href: '#contact' },
   ];
@@ -73,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenEnquiry }) => {
       <motion.header
         id="main-header"
         initial={reduced ? false : { y: -12, opacity: 0 }}
-        animate={reduced ? undefined : { y: 0, opacity: 1 }}
+        animate={reduced || !introDone ? undefined : { y: 0, opacity: 1 }}
         transition={{ duration: DUR.base, delay: 0.2, ease: EASE }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-expo ${
           isScrolled

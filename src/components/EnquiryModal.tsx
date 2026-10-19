@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { X, Check, Calendar, Phone, Mail, User } from 'lucide-react';
+import { X, Check, Calendar, Phone, Mail, User, Loader2 } from 'lucide-react';
 import { DUR, EASE } from '../motion/tokens.ts';
 import { lockScroll, unlockScroll } from '../motion/lenis.ts';
+import { sendLead, fmtDay, whatsappUrl } from '../chat/leads.ts';
+import { PROJECT } from '../chat/knowledge.ts';
 
 interface EnquiryModalProps {
   isOpen: boolean;
@@ -24,6 +26,8 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
   const [preferredDate, setPreferredDate] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
   const reduced = useReducedMotion();
 
   // Pause smooth scroll and lock the page while the dialog is open; Escape closes it.
@@ -40,8 +44,29 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Delivered to the sales inbox as a lead summary, like the concierge's requests.
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    setFailed(false);
+    const status = await sendLead(`Skyline Villas: ${initialSubject.toLowerCase()} from ${name || 'a website visitor'}`, {
+      Request: initialSubject,
+      Name: name,
+      Email: email,
+      'Phone / WhatsApp': phone || 'Not given',
+      'Interested in': selectedResidence === 'Any Residence' ? 'Not decided yet' : selectedResidence,
+      'Preferred date': preferredDate ? fmtDay(preferredDate, 'long') : 'Not given',
+      Message: message || 'No message',
+      Source: 'Website enquiry form',
+      Page: window.location.href,
+      _replyto: email,
+    });
+    setSending(false);
+    if (status === 'failed') {
+      setFailed(true);
+      return;
+    }
     setIsSubmitted(true);
   };
 
@@ -62,7 +87,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: DUR.quick, ease: EASE }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 sm:p-6 overflow-y-auto"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 sm:p-6 overflow-y-auto"
         >
           <motion.div
             data-lenis-prevent
@@ -216,14 +241,31 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
               </div>
 
               <div className="pt-3">
+                {failed && (
+                  <p role="alert" className="mb-3 bg-[#F4F0E8] px-4 py-3 text-xs leading-5 text-[#191715]">
+                    Your request didn't go through. Please try again, or{' '}
+                    <a href={whatsappUrl({ name })} target="_blank" rel="noreferrer" className="underline underline-offset-4">
+                      message us on WhatsApp
+                    </a>
+                    .
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className="btn-solid w-full inline-flex items-center justify-center bg-black text-[#FCFAF6] hover:bg-black/90 shadow-sm"
+                  disabled={sending}
+                  className="btn-solid w-full inline-flex items-center justify-center gap-2 bg-black text-[#FCFAF6] hover:bg-black/90 shadow-sm disabled:opacity-70"
                 >
-                  Submit Private Request
+                  {sending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Sending
+                    </>
+                  ) : (
+                    'Submit Private Request'
+                  )}
                 </button>
                 <p className="text-[0.6rem] text-center text-[#736E67] mt-3 font-light">
-                  Your privacy is respected. Information is held in strict confidence.
+                  Your privacy is respected. Demo site: requests go to {PROJECT.builtBy}, who built it.
                 </p>
               </div>
             </form>

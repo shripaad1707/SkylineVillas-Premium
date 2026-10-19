@@ -15,6 +15,9 @@ import { ContactSection } from './components/ContactSection.tsx';
 import { Footer } from './components/Footer.tsx';
 import { EnquiryModal } from './components/EnquiryModal.tsx';
 import { ResidenceModal } from './components/ResidenceModal.tsx';
+import { Preloader } from './components/Preloader.tsx';
+import { Concierge } from './components/concierge/Concierge.tsx';
+import { RESIDENCES } from './data.ts';
 import { Residence } from './types.ts';
 import { initLenis } from './motion/lenis.ts';
 
@@ -41,6 +44,9 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
     <div className="min-h-screen bg-[#FCFAF6] text-[#191715] flex flex-col selection:bg-black selection:text-white">
+      {/* Opening sequence: covers the first paint while the hero loads */}
+      <Preloader />
+
       {/* Fixed Navigation Header */}
       <Navbar onOpenEnquiry={() => handleOpenEnquiry('Private Viewing Appointment')} />
 
@@ -75,6 +81,9 @@ export default function App() {
         onClose={() => setSelectedResidence(null)}
         onEnquire={handleResidenceEnquire}
       />
+
+      {/* AI assistant: answers questions, books viewings, captures leads */}
+      <Concierge onOpenResidence={(id) => setSelectedResidence(RESIDENCES.find((r) => r.id === id) ?? null)} />
     </div>
     </MotionConfig>
   );

@@ -4,12 +4,14 @@ import { ArrowRight, ArrowDown } from 'lucide-react';
 import { EASE, DUR } from '../motion/tokens.ts';
 import { Reveal } from '../motion/Reveal.tsx';
 import { MaskedHeading } from '../motion/MaskedHeading.tsx';
+import { useIntroDone } from '../motion/intro.ts';
 import { ScrollIndicator } from '../motion/ScrollIndicator.tsx';
 
 export const Hero: React.FC = () => {
   const heroRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const heroInView = useInView(heroRef);
+  const introDone = useIntroDone();
 
   // Progress through the hero's scroll-out, from resting at the top of the
   // viewport to fully scrolled past.
@@ -52,7 +54,7 @@ export const Hero: React.FC = () => {
             fetchPriority="high"
             decoding="async"
             initial={reduced ? false : { scale: 1.08 }}
-            animate={reduced ? undefined : { scale: 1 }}
+            animate={reduced || !introDone ? undefined : { scale: 1 }}
             transition={{ duration: DUR.settle, ease: EASE }}
           />
         </picture>

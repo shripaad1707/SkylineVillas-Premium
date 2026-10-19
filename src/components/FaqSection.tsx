@@ -4,6 +4,7 @@ import { FAQ_ITEMS } from '../data.ts';
 import { DUR, EASE } from '../motion/tokens.ts';
 import { Reveal } from '../motion/Reveal.tsx';
 import { MaskedHeading } from '../motion/MaskedHeading.tsx';
+import { ArrowRight } from 'lucide-react';
 
 interface FaqSectionProps {
   onOpenEnquiry: (initialSubject?: string) => void;
@@ -120,6 +121,23 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenEnquiry }) => {
               </Reveal>
             );
           })}
+
+          {/* Anything the FAQ doesn't cover goes to the assistant. */}
+          <Reveal delay={0.1} className="mt-10 flex flex-col gap-5 rounded-[18px] bg-[#F1ECE3] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+            <div>
+              <p className="font-display text-[1.7rem] leading-tight text-[#191715]">Still have a question?</p>
+              <p className="mt-1.5 text-sm font-light text-[#736E67]">Ask the Skyline assistant. It answers instantly, day or night, and can book your viewing.</p>
+            </div>
+            <button
+              id="faq-ask-concierge-btn"
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('concierge:open'))}
+              className="group btn-solid inline-flex shrink-0 items-center justify-center gap-3 bg-black text-[#FCFAF6] hover:bg-black/85"
+            >
+              <span>Ask the assistant</span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-700 ease-expo group-hover:translate-x-1" />
+            </button>
+          </Reveal>
         </div>
       </div>
     </section>

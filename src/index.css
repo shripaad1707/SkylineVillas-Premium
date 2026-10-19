@@ -359,6 +359,11 @@ html.lenis {
   outline-offset: 3px;
 }
 
+/* The concierge composer shows focus on its rounded field instead. */
+.concierge-input:focus-visible {
+  outline: none;
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {

@@ -45,7 +45,7 @@ export const ResidenceModal: React.FC<ResidenceModalProps> = ({
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: DUR.quick, ease: EASE }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 sm:p-6 overflow-y-auto"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 sm:p-6 overflow-y-auto"
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
